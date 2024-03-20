@@ -11,12 +11,13 @@ interface DrawerProps {
   onClose: () => void;
   children: React.ReactNode;
   width?: number;
+  title: string;
 }
 
 const prefixCls = "7x-drawer";
 
 const Drawer: React.FC<DrawerProps> = (props) => {
-  const { width, open, children, onClose } = props;
+  const { width, open, children, onClose, title } = props;
 
   return (
     <Portal open={open} autoLock={true} autoDestroy={false}>
@@ -54,6 +55,8 @@ const Drawer: React.FC<DrawerProps> = (props) => {
             className={styles[`${prefixCls}-content`]}
             style={{ width: width ? `${width}px` : "800px" }}
           >
+            <div className={styles[`${prefixCls}-title`]}>{title}</div>
+
             <div>{children}</div>
           </div>
         </CSSTransition>

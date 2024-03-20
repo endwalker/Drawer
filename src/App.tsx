@@ -46,6 +46,7 @@ const App = () => {
       <Drawer
         width={500}
         open={open}
+        title={"Basic Drawer"}
         // destroyOnClose
         onClose={() => setOpen(false)}
       >
