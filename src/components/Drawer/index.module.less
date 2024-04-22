@@ -1,0 +1,48 @@
+@drawer-prefix-cls: ~"7x-drawer";
+
+.@{drawer-prefix-cls} {
+  &-wrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    position: absolute;
+    top: 0;
+  }
+
+  &-mask {
+    flex-grow: 1;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+
+  &-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: black;
+    margin: 0 0 40px;
+
+    &::after {
+      position: absolute;
+      top: 54px;
+      left: 50%;
+      display: inline-block;
+      width: calc(100% - 56px);
+      height: 1px;
+      background: #dae0f6;
+      transform: translateX(-50%);
+      content: "";
+    }
+  }
+
+  &-content {
+    width: 800px;
+    height: 100%;
+    position: fixed;
+    right: 0;
+    top: 0;
+    background-color: #fff;
+    padding: 14px 28px;
+  }
+}
