@@ -1,11 +1,29 @@
-import { CSSProperties, PropsWithChildren } from "react";
+// import Portal from "@rc-component/portal";
+import { CSSProperties, PropsWithChildren, useEffect } from "react";
 import { CSSTransition } from "react-transition-group";
 
+import styles from "../Drawer/index.module.less";
+
+const prefixCls = "7x-drawer";
+
 const SecondDrawer: React.FC<PropsWithChildren<any>> = (props) => {
-  const { children, open, width } = props;
+  const {
+    firstDrawerOpen,
+    children,
+    open,
+    width,
+    onClose,
+    title = "second",
+  } = props;
+
+  useEffect(() => {
+    if (!firstDrawerOpen) {
+      onClose();
+    }
+  }, [firstDrawerOpen]);
 
   return (
-    <div style={{ width: width ? `${width}px` : "800px" }}>
+    <div className={styles[`${prefixCls}-wrapper`]}>
       <CSSTransition
         in={open}
         appear
@@ -25,7 +43,12 @@ const SecondDrawer: React.FC<PropsWithChildren<any>> = (props) => {
             "-1";
         }}
       >
-        <div>
+        <div
+          className={styles[`${prefixCls}-content`]}
+          style={{ width: width ? `${width}px` : "800px" }}
+        >
+          <div className={styles[`${prefixCls}-title`]}>{title}</div>
+
           <div>{children}</div>
         </div>
       </CSSTransition>

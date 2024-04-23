@@ -58,7 +58,11 @@ const App = () => {
         <Table dataSource={dataSource} columns={columns} />
         <Button onClick={() => setSecondOpen(!secondOpen)}>二级开关</Button>
 
-        <SecondDrawer width={800} open={secondOpen}>
+        <SecondDrawer
+          width={600}
+          open={secondOpen}
+          onClose={() => setSecondOpen(false)}
+        >
           123
         </SecondDrawer>
       </Drawer>
