@@ -13,10 +13,13 @@ interface BasicDrawerProps {
 const BasicDrawer: React.FC<PropsWithChildren<BasicDrawerProps>> = (props) => {
   const { width, openStates, children, onCloseFns, title } = props;
 
+  const [firstOpenState, secondOpenState = false, thirdOpenState = false] =
+    openStates;
+
   return (
     <div className={styles[`${prefixCls}-wrapper`]}>
       <CSSTransition
-        in={openStates[0]}
+        in={firstOpenState}
         appear
         timeout={300}
         classNames="fade"
@@ -33,12 +36,12 @@ const BasicDrawer: React.FC<PropsWithChildren<BasicDrawerProps>> = (props) => {
       </CSSTransition>
 
       <CSSTransition
-        in={openStates[0]}
+        in={firstOpenState}
         appear={true}
         enter={true}
         classNames={"drawer"}
         timeout={300}
-        // unmountOnExit={openStates[1] || openStates[2] ? false : true}
+        // unmountOnExit={secondOpenState || thirdOpenState) { ? false : true}
         unmountOnExit={false}
         onEnter={(e: HTMLElement) => {
           ((e.parentNode as HTMLDivElement).style as CSSProperties).display =
@@ -52,7 +55,7 @@ const BasicDrawer: React.FC<PropsWithChildren<BasicDrawerProps>> = (props) => {
           e.style.opacity = "1";
         }}
         onExiting={(e: HTMLElement) => {
-          if (openStates[1] || openStates[2]) {
+          if (secondOpenState || thirdOpenState) {
             e.style.opacity = "1";
           } else {
             e.style.opacity = "0";

@@ -3,13 +3,13 @@ import {
   Children,
   ReactElement,
   cloneElement,
-  useState,
   useEffect,
 } from "react";
 import Portal from "@rc-component/portal";
 
 import BasicDrawer from "../BasicDrawer";
 import SecondDrawer from "../SecondDrawer";
+import { useDrawerStore } from "@/store";
 
 interface DrawerProps {
   open: boolean;
@@ -28,21 +28,8 @@ const Drawer: React.FC<PropsWithChildren<DrawerProps>> & {
 
   const htmlChildren: ReactElement[] = [];
 
-  const [drawerState, setDrawerState] = useState(() => {
-    return {
-      first: firstDrawerOpen,
-      second: null,
-      third: null,
-    };
-  });
-
-  const [collapseState, setCollapseState] = useState(() => {
-    return {
-      first: firstDrawerOpen,
-      second: null,
-      third: null,
-    };
-  });
+  const { drawerState, changeDrawerState, collapseState, changeCollapseState } =
+    useDrawerStore();
 
   const secondDrawerProps: any = {};
 
@@ -62,8 +49,7 @@ const Drawer: React.FC<PropsWithChildren<DrawerProps>> & {
   useEffect(() => {
     Children.forEach(customizeChildren, (child: Record<any, any> | any) => {
       if (customizeDrawerName.includes(child?.type?.displayName)) {
-        setDrawerState({
-          ...drawerState,
+        changeDrawerState({
           [child?.type?.displayName.split("-")[0]]: child.props.open,
         });
       }
@@ -72,15 +58,14 @@ const Drawer: React.FC<PropsWithChildren<DrawerProps>> & {
 
   useEffect(() => {
     if (firstDrawerOpen) {
-      setDrawerState({
-        ...drawerState,
+      changeDrawerState({
         first: firstDrawerOpen,
       });
     } else {
-      setDrawerState({
+      changeDrawerState({
         first: firstDrawerOpen,
-        second: null,
-        third: null,
+        second: undefined,
+        third: undefined,
       });
     }
   }, [firstDrawerOpen]);
