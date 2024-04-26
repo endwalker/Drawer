@@ -45,6 +45,18 @@ const BasicDrawer: React.FC<PropsWithChildren<BasicDrawerProps>> = (props) => {
             "flex";
           ((e.parentNode as HTMLDivElement).style as CSSProperties).zIndex =
             "999";
+
+          e.style.opacity = "0";
+        }}
+        onEntering={(e: HTMLElement) => {
+          e.style.opacity = "1";
+        }}
+        onExiting={(e: HTMLElement) => {
+          if (openStates[1] || openStates[2]) {
+            e.style.opacity = "1";
+          } else {
+            e.style.opacity = "0";
+          }
         }}
         onExited={(e: HTMLElement) => {
           ((e.parentNode as HTMLDivElement).style as CSSProperties).display =
