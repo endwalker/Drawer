@@ -11,6 +11,8 @@ interface DrawerProps {
   changeDrawerState: (drawerState: State) => void;
   collapseState: State;
   changeCollapseState: (collapseState: State) => void;
+  manualState: State;
+  changeManualState: (manualState: State) => void;
 }
 
 export const useDrawerStore = create<DrawerProps>((set) => ({
@@ -23,12 +25,22 @@ export const useDrawerStore = create<DrawerProps>((set) => ({
     set((state) => ({ drawerState: { ...state.drawerState, ...drawerState } })),
 
   collapseState: {
-    first: undefined,
-    second: undefined,
-    third: undefined,
+    first: false,
+    second: false,
+    third: false,
   },
   changeCollapseState: (collapseState) =>
     set((state) => ({
       collapseState: { ...state.collapseState, ...collapseState },
+    })),
+
+  manualState: {
+    first: undefined,
+    second: undefined,
+    third: undefined,
+  },
+  changeManualState: (manualState) =>
+    set((state) => ({
+      manualState: { ...state.manualState, ...manualState },
     })),
 }));

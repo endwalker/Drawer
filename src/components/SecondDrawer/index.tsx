@@ -23,7 +23,7 @@ const SecondDrawer: React.FC<PropsWithChildren<any>> = (props) => {
   }, [firstDrawerOpen]);
 
   return (
-    <div className={styles[`${prefixCls}-wrapper`]}>
+    <div>
       <CSSTransition
         in={open}
         appear

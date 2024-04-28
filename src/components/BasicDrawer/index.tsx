@@ -1,76 +1,92 @@
-import styles from "../Drawer/index.module.less";
-import { CSSProperties, PropsWithChildren } from "react";
+import { CSSProperties, PropsWithChildren, useEffect, useRef } from "react";
 import { CSSTransition } from "react-transition-group";
+import { useDrawerStore } from "@/store";
+
+import styles from "../Drawer/index.module.less";
 
 const prefixCls = "7x-drawer";
 
 interface BasicDrawerProps {
   openStates: [first: boolean, second?: boolean, third?: boolean];
-  onCloseFns: (() => void)[];
   width?: number;
   title: string;
 }
 const BasicDrawer: React.FC<PropsWithChildren<BasicDrawerProps>> = (props) => {
-  const { width, openStates, children, onCloseFns, title } = props;
+  const { width, openStates, children, title } = props;
 
   const [firstOpenState, secondOpenState = false, thirdOpenState = false] =
     openStates;
 
-  return (
-    <div className={styles[`${prefixCls}-wrapper`]}>
-      <CSSTransition
-        in={firstOpenState}
-        appear
-        timeout={300}
-        classNames="fade"
-        unmountOnExit
-      >
-        <div
-          className={styles[`${prefixCls}-mask`]}
-          onClick={() => {
-            onCloseFns.forEach((fn) => {
-              fn();
-            });
-          }}
-        />
-      </CSSTransition>
+  const nodeRef = useRef<null | HTMLElement>(null);
 
+  const { collapseState, changeCollapseState } = useDrawerStore();
+  console.log("collapseState:", collapseState);
+
+  useEffect(() => {
+    if (secondOpenState) {
+      changeCollapseState({
+        first: true,
+      });
+    }
+  }, [secondOpenState]);
+
+  const onExiting = () => {
+    if (secondOpenState || thirdOpenState) {
+      nodeRef.current!.style.opacity = "1";
+    } else {
+      nodeRef.current!.style.opacity = "0";
+    }
+    nodeRef.current!.style.zIndex = "99999";
+  };
+
+  const onExited = () => {
+    (
+      (nodeRef.current!.parentNode as HTMLDivElement).style as CSSProperties
+    ).display = "";
+    (
+      (nodeRef.current!.parentNode as HTMLDivElement).style as CSSProperties
+    ).zIndex = "-1";
+
+    // nodeRef.current!.style.transform = "translateX(100%)";
+  };
+
+  const onEnterFlow = () => {
+    // console.log("onEnterFlow");
+
+    onExiting();
+    onExited();
+  };
+
+  if (secondOpenState) {
+    onEnterFlow();
+  }
+
+  return (
+    <div>
       <CSSTransition
-        in={firstOpenState}
+        in={!collapseState.first}
         appear={true}
         enter={true}
         classNames={"drawer"}
         timeout={300}
         // unmountOnExit={secondOpenState || thirdOpenState) { ? false : true}
         unmountOnExit={false}
-        onEnter={(e: HTMLElement) => {
-          ((e.parentNode as HTMLDivElement).style as CSSProperties).display =
+        nodeRef={nodeRef}
+        onEnter={() => {
+          (nodeRef.current!.parentNode as HTMLDivElement).style.display =
             "flex";
-          ((e.parentNode as HTMLDivElement).style as CSSProperties).zIndex =
-            "999";
+          (nodeRef.current!.parentNode as HTMLDivElement).style.zIndex = "999";
 
-          e.style.opacity = "0";
+          nodeRef.current!.style.opacity = "0";
         }}
-        onEntering={(e: HTMLElement) => {
-          e.style.opacity = "1";
+        onEntering={() => {
+          nodeRef.current!.style.opacity = "1";
         }}
-        onExiting={(e: HTMLElement) => {
-          if (secondOpenState || thirdOpenState) {
-            e.style.opacity = "1";
-          } else {
-            e.style.opacity = "0";
-          }
-        }}
-        onExited={(e: HTMLElement) => {
-          ((e.parentNode as HTMLDivElement).style as CSSProperties).display =
-            "";
-          ((e.parentNode as HTMLDivElement).style as CSSProperties).zIndex =
-            "-1";
-
-          // e.style.transform = "translateX(100%)";
-        }}
+        onExiting={onExiting}
+        onExited={onExited}
       >
         <div
+          ref={nodeRef}
           className={styles[`${prefixCls}-content`]}
           style={{ width: width ? `${width}px` : "800px" }}
         >

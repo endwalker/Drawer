@@ -4,12 +4,18 @@ import {
   ReactElement,
   cloneElement,
   useEffect,
+  useMemo,
 } from "react";
 import Portal from "@rc-component/portal";
+import { CSSTransition } from "react-transition-group";
 
 import BasicDrawer from "../BasicDrawer";
 import SecondDrawer from "../SecondDrawer";
 import { useDrawerStore } from "@/store";
+
+import styles from "../Drawer/index.module.less";
+
+const prefixCls = "7x-drawer";
 
 interface DrawerProps {
   open: boolean;
@@ -72,19 +78,40 @@ const Drawer: React.FC<PropsWithChildren<DrawerProps>> & {
 
   return (
     <Portal open={firstDrawerOpen} autoLock={true} autoDestroy={false}>
-      <BasicDrawer
-        openStates={[firstDrawerOpen, secondDrawerProps.open]}
-        title={title}
-        width={width}
-        onCloseFns={[onClose, secondDrawerProps.onClose]}
-      >
-        {htmlChildren}
+      <div className={styles[`${prefixCls}-wrapper`]}>
+        {useMemo(() => {
+          return (
+            <CSSTransition
+              in={firstDrawerOpen}
+              appear
+              timeout={300}
+              classNames="fade"
+              unmountOnExit
+            >
+              <div
+                className={styles[`${prefixCls}-mask`]}
+                onClick={() => {
+                  if (onClose) onClose();
+                  if (secondDrawerProps?.onClose) secondDrawerProps.onClose();
+                }}
+              />
+            </CSSTransition>
+          );
+        }, [firstDrawerOpen])}
+
+        <BasicDrawer
+          openStates={[firstDrawerOpen, secondDrawerProps.open]}
+          title={title}
+          width={width}
+        >
+          {htmlChildren}
+        </BasicDrawer>
 
         {drawerState.second &&
           Children.map(customizeChildren, (child) => {
             return cloneElement(child, { firstDrawerOpen });
           })}
-      </BasicDrawer>
+      </div>
     </Portal>
   );
 };
